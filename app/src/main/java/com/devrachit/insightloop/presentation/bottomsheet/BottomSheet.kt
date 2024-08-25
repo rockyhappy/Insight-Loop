@@ -35,7 +35,7 @@ class BottomSheet(
             }
 
             btnDone.setOnClickListener {
-                onDoneClick(adapter.list)
+                onDoneClick(adapter.options)
                 dismiss()
             }
         }

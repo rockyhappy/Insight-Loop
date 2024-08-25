@@ -8,9 +8,8 @@ import com.devrachit.insightloop.R
 import com.devrachit.insightloop.domain.model.Option
 import com.devrachit.insightloop.databinding.RvItemOptionBinding
 
-class OptionAdapter(private val options: MutableList<Option>) : RecyclerView.Adapter<OptionAdapter.OptionViewHolder>() {
-
-    inner class OptionViewHolder(private val binding: RvItemOptionBinding) : RecyclerView.ViewHolder(binding.root) {
+class OptionAdapter(val options: MutableList<Option>): RecyclerView.Adapter<OptionAdapter.OptionViewHolder>(){
+    inner class OptionViewHolder(private val binding: RvItemOptionBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(option: Option) {
             binding.apply {
                 textOption.text = option.text
@@ -32,12 +31,12 @@ class OptionAdapter(private val options: MutableList<Option>) : RecyclerView.Ada
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = RvItemOptionBinding.inflate(inflater, parent, false)
-        return OptionViewHolder(binding)
+        return OptionViewHolder(RvItemOptionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
-    override fun getItemCount(): Int = options.size
+    override fun getItemCount(): Int {
+        return options.size
+    }
 
     override fun onBindViewHolder(holder: OptionViewHolder, position: Int) {
         holder.bind(options[position])
