@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "insightloop"
 include(":app")
- 
+include(":core")
