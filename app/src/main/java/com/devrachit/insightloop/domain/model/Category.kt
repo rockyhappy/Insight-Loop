@@ -1,21 +1,19 @@
 package com.devrachit.insightloop.domain.model
 
-sealed class Category(val value:String){
-object CONFIDENCE: Category("Confidence")
-object GRAMMAR: Category("Grammar")
-object FLUENCY_AND_VOCABULARY: Category("Fluency And Vocabulary")
-object PRONUNCIATION: Category("Pronunciation")
-object OTHER: Category("Other")
-object UNSPECIFIED: Category("Unspecified")
+enum class Category(val value: String) {
+    CONFIDENCE("Confidence"),
+    GRAMMAR("Grammar"),
+    FLUENCY_AND_VOCABULARY("Fluency And Vocabulary"),
+    PRONUNCIATION("Pronunciation"),
+    OTHER("Other"),
+    UNSPECIFIED("Unspecified"),
 }
 
 fun getCategoryFromString(value: String): Category {
-    return when (value.lowercase()) {
-        Category.CONFIDENCE.value.lowercase() -> Category.CONFIDENCE
-        Category.GRAMMAR.value.lowercase() -> Category.GRAMMAR
-        Category.FLUENCY_AND_VOCABULARY.value.lowercase() -> Category.FLUENCY_AND_VOCABULARY
-        Category.PRONUNCIATION.value.lowercase() -> Category.PRONUNCIATION
-        Category.OTHER.value.lowercase() -> Category.OTHER
-        else -> Category.UNSPECIFIED
+    for (category in Category.entries) {
+        if (category.value.equals(value, ignoreCase = true)) {
+            return category
+        }
     }
+    return Category.UNSPECIFIED
 }

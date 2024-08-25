@@ -2,47 +2,55 @@ package com.devrachit.insightloop.presentation.feedback
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.devrachit.insightloop.R
-import com.devrachit.insightloop.databinding.FragmentFeedbackBinding
+import com.devrachit.insightloop.databinding.FragmentHomeBinding
 import com.devrachit.insightloop.domain.model.Feedback
-import com.devrachit.insightloop.presentation.adapter.CategoryAdapter
-import com.devrachit.insightloop.presentation.bottomsheet.BottomSheet
+import com.devrachit.insightloop.presentation.adapter.FeedbackCategoryAdapter
+import com.devrachit.insightloop.presentation.bottomsheet.OptionBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FeedbackFragment : Fragment() {
-    private lateinit var binding : FragmentFeedbackBinding
-    private val viewModel: FeedbackViewModel by viewModels()
-    private lateinit var feedbackCategoryAdapter: CategoryAdapter
-    private lateinit var optionBottomSheet: BottomSheet
+class HomeFragment : Fragment() {
+
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel: HomeViewModel by viewModels()
+    private lateinit var feedbackCategoryAdapter: FeedbackCategoryAdapter
+
+    private lateinit var optionBottomSheet: OptionBottomSheet
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentFeedbackBinding.inflate(inflater, container, false)
-        binding.apply {
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        binding.btnSubmit.setOnClickListener {
+            if (viewModel.submitEnabled) {
+                findNavController().navigate(R.id.action_feedbackFragment_to_thankYouFragment)
+            }
         }
 
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(viewModel.submitEnabled.value){
+        if(viewModel.submitEnabled){
             enableSubmitButton()
         }
         else{
@@ -55,42 +63,42 @@ class FeedbackFragment : Fragment() {
                 viewModel.feedbackCategories.collectLatest {
 
                     feedbackCategoryAdapter =
-                        CategoryAdapter(it.toMutableList()) { feedback, i, j ->
+                        FeedbackCategoryAdapter(it.toMutableList()) { feedback, i, j ->
 
-                            val categories = feedbackCategoryAdapter.categories
+                            val list = feedbackCategoryAdapter.list
                             when (feedback) {
-                                Feedback.DidWell -> {
-                                    if (categories[i].feedbackItems[j].didWell.size > 1) {
+                                Feedback.DID_WELL -> {
+                                    if (list[i].feedbackItems[j].didWell.size > 1) {
                                         optionBottomSheet =
-                                            BottomSheet(categories[i].feedbackItems[j].didWell) {
-                                                feedbackCategoryAdapter.categories[i].feedbackItems[j].didWell =
+                                            OptionBottomSheet(list[i].feedbackItems[j].didWell) {
+                                                feedbackCategoryAdapter.list[i].feedbackItems[j].didWell =
                                                     it
                                             }
                                         optionBottomSheet.show(parentFragmentManager, "BottomSheet")
                                     }
                                 }
 
-                                Feedback.ScopeOfImprovement -> {
-                                    if (categories[i].feedbackItems[j].scopeOfImprovement.size > 1) {
+                                Feedback.SCOPE_OF_IMPROVEMENT -> {
+                                    if (list[i].feedbackItems[j].scopeOfImprovement.size > 1) {
                                         optionBottomSheet =
-                                            BottomSheet(categories[i].feedbackItems[j].scopeOfImprovement) {
-                                                feedbackCategoryAdapter.categories[i].feedbackItems[j].scopeOfImprovement =
+                                            OptionBottomSheet(list[i].feedbackItems[j].scopeOfImprovement) {
+                                                feedbackCategoryAdapter.list[i].feedbackItems[j].scopeOfImprovement =
                                                     it
                                             }
                                         optionBottomSheet.show(parentFragmentManager, "BottomSheet")
                                     }
                                 }
 
-                                Feedback.None-> {}
+                                Feedback.NONE -> {}
                             }
 
-                            for (k in 0 until feedbackCategoryAdapter.categories.size - 1) {
-                                val item = feedbackCategoryAdapter.categories[k]
-                                if (item.feedbackItems.count { it.selectedFeedback != Feedback.None } == 0) {
-                                    viewModel.setEnabled(false)
+                            for (k in 0 until feedbackCategoryAdapter.list.size - 1) {
+                                val item = feedbackCategoryAdapter.list[k]
+                                if (item.feedbackItems.count { it.selectedFeedback != Feedback.NONE } == 0) {
+                                    viewModel.setSubmitEnabled(false)
                                     disableSubmitButton()
                                 } else {
-                                    viewModel.setEnabled(true)
+                                    viewModel.setSubmitEnabled(true)
                                     enableSubmitButton()
                                 }
                             }
@@ -105,7 +113,6 @@ class FeedbackFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.error.collectLatest {
-                    Log.d("Screen",it.toString())
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -125,6 +132,7 @@ class FeedbackFragment : Fragment() {
             }
         }
     }
+
     private fun enableSubmitButton() {
         binding.btnSubmit.setTextColor(
             ContextCompat.getColor(
@@ -135,7 +143,7 @@ class FeedbackFragment : Fragment() {
         binding.btnSubmit.backgroundTintList = ColorStateList.valueOf(
             ContextCompat.getColor(
                 requireContext(),
-                R.color.light_green
+                R.color.green_light
             )
         )
     }
@@ -144,7 +152,7 @@ class FeedbackFragment : Fragment() {
         binding.btnSubmit.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
-                R.color.extra_light_green
+                R.color.green_extra_light
             )
         )
         binding.btnSubmit.backgroundTintList = ColorStateList.valueOf(
@@ -154,9 +162,9 @@ class FeedbackFragment : Fragment() {
             )
         )
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.root.removeAllViewsInLayout()
+        _binding = null
     }
-
 }

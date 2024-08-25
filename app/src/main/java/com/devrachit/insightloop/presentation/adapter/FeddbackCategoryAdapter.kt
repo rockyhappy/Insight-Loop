@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.devrachit.insightloop.R
 import com.devrachit.insightloop.databinding.FeedbackCategoryItemBinding
 import com.devrachit.insightloop.domain.model.Category
+import com.devrachit.insightloop.domain.model.Feedback
+import com.devrachit.insightloop.domain.model.FeedbackCategory
+import com.devrachit.insightloop.presentation.utility.Utils.clearItemDecorations
+import com.devrachit.insightloop.presentation.utility.Utils.dpToPx
 
 class FeedbackCategoryAdapter(
     val list: MutableList<FeedbackCategory>,

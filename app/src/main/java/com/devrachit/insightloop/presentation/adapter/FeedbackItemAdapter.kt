@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.devrachit.insightloop.R
 import com.devrachit.insightloop.databinding.FeedbackItemBinding
+import com.devrachit.insightloop.domain.model.Feedback
 import com.devrachit.insightloop.domain.model.FeedbackItem
 
 class FeedbackItemsAdapter(
@@ -91,7 +92,4 @@ class FeedbackItemsAdapter(
     override fun onBindViewHolder(holder: FeedbackItemViewHolder, position: Int) {
         holder.bind(list[position])
     }
-}
-enum class Feedback{
-    DID_WELL, SCOPE_OF_IMPROVEMENT, NONE
 }

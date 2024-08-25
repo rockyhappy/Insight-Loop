@@ -1,6 +1,6 @@
 package com.devrachit.insightloop.data.remote.dto
 
-data class FeedbackDetailsDto(
+data class FeedbackDataDto(
     val feedbackCategories: List<FeedbackCategoryDto>,
     val statusCode: Int
 )

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.devrachit.insightloop.R
 import com.devrachit.insightloop.databinding.OptionItemBinding
 import com.devrachit.insightloop.domain.model.Option
-import com.devrachit.insightloop.databinding.RvItemOptionBinding
 
 class OptionAdapter(val list: MutableList<Option>): RecyclerView.Adapter<OptionAdapter.OptionViewHolder>(){
     inner class OptionViewHolder(private val binding: OptionItemBinding): RecyclerView.ViewHolder(binding.root) {

@@ -12,8 +12,8 @@
 
     <fragment
         android:id="@+id/feedbackFragment"
-        tools:layout="@layout/fragment_feedback"
-        android:name="com.devrachit.insightloop.presentation.feedback.FeedbackFragment"
+        tools:layout="@layout/fragment_home"
+        android:name="com.devrachit.insightloop.presentation.feedback.HomeFragment"
         android:label="FeedbackFragment" >
         <action
             android:id="@+id/action_feedbackFragment_to_thankYouFragment"
