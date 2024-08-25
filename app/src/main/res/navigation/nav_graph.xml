@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/feedbackFragment">
+    <fragment
+        android:id="@+id/thankYouFragment"
+        tools:layout="@layout/fragment_thankyou"
+        android:name="com.devrachit.insightloop.presentation.thankyou.ThankyouFragment"
+        android:label="ThankYouFragment" />
+
+    <fragment
+        android:id="@+id/feedbackFragment"
+        tools:layout="@layout/fragment_feedback"
+        android:name="com.devrachit.insightloop.presentation.feedback.FeedbackFragment"
+        android:label="FeedbackFragment" >
+        <action
+            android:id="@+id/action_feedbackFragment_to_thankYouFragment"
+            app:destination="@id/thankYouFragment" />
+    </fragment>
+</navigation>

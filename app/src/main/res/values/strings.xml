@@ -2,7 +2,7 @@
     <string name="app_name">insightloop</string>
     <string name="app_title">Feedback App</string>
     <string name="home_message">Feedback is critical for your learner to improve. It is mandatory to give at least two feedbacks for a regular session</string>
-    <string name="learners_proficiency_description">Tell us a bit about your learners' English proficiency</string>
+    <string name="learners_proficiency_description">Tell us a bit about your learners\' English proficiency</string>
     <string name="improvement_scope">Scope of Improvement</string>
     <string name="select_specifics">Choose Specifics</string>
     <string name="complete">Done</string>
@@ -12,5 +12,7 @@
     <string name="icon_label">Icon</string>
     <string name="arrow_label">Arrow</string>
     <string name="close">Cross</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
