@@ -10,12 +10,12 @@ import com.devrachit.insightloop.domain.model.getCategoryFromString
 
 fun FeedbackCategoryDto.toFeedbackCategory() =
     CategoryData(
-        category = getCategoryFromString(categoryName).toString(),
-        feedbackItems = feedbackItemDtos.map {
+        category = getCategoryFromString(categoryName ?: "").toString(),
+        feedbackItems = feedbackItemDtos?.map {
             FeedbackItem(
                 aspect = it.aspect,
-                didWell = it.didWell.map { Option(it) },
-                scopeOfImprovement = it.scopeOfImprovement.map { Option(it) }
+                didWell = it.didWell?.map { Option(it) } ?: emptyList(),
+                scopeOfImprovement =it.scopeOfImprovement?.map { Option(it) } ?: emptyList()
             )
-        }
+        }?: emptyList()
     )

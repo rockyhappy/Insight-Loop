@@ -1,44 +1,45 @@
 package com.devrachit.insightloop.presentation.adapter
 
+import android.graphics.Rect
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.devrachit.insightloop.R
+import com.devrachit.insightloop.databinding.OptionItemBinding
 import com.devrachit.insightloop.domain.model.Option
 import com.devrachit.insightloop.databinding.RvItemOptionBinding
 
-class OptionAdapter(val options: MutableList<Option>): RecyclerView.Adapter<OptionAdapter.OptionViewHolder>(){
-    inner class OptionViewHolder(private val binding: RvItemOptionBinding): RecyclerView.ViewHolder(binding.root) {
+class OptionAdapter(val list: MutableList<Option>): RecyclerView.Adapter<OptionAdapter.OptionViewHolder>(){
+    inner class OptionViewHolder(private val binding: OptionItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(option: Option) {
-            binding.apply {
-                textOption.text = option.text
+            binding.tvOption.text = option.text
+            if(option.isSelected){
+                binding.llOption.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.green_light))
+                binding.tvOption.setTextColor(ContextCompat.getColor(binding.root.context, R.color.white))
+            }
+            else{
+                binding.llOption.setBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.white))
+                binding.tvOption.setTextColor(ContextCompat.getColor(binding.root.context, R.color.black))
+            }
 
-                if (option.isSelected) {
-                    layoutOption.setBackgroundColor(ContextCompat.getColor(root.context, R.color.light_green))
-                    textOption.setTextColor(ContextCompat.getColor(root.context, R.color.white))
-                } else {
-                    layoutOption.setBackgroundColor(ContextCompat.getColor(root.context, R.color.white))
-                    textOption.setTextColor(ContextCompat.getColor(root.context, R.color.black))
-                }
-
-                layoutOption.setOnClickListener {
-                    options[adapterPosition] = options[adapterPosition].copy(isSelected = !options[adapterPosition].isSelected)
-                    notifyItemChanged(adapterPosition)
-                }
+            binding.llOption.setOnClickListener {
+                list[adapterPosition] = list[adapterPosition].copy(isSelected = !list[adapterPosition].isSelected)
+                notifyItemChanged(adapterPosition)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
-        return OptionViewHolder(RvItemOptionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return OptionViewHolder(OptionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int {
-        return options.size
+        return list.size
     }
 
     override fun onBindViewHolder(holder: OptionViewHolder, position: Int) {
-        holder.bind(options[position])
+        holder.bind(list[position])
     }
 }

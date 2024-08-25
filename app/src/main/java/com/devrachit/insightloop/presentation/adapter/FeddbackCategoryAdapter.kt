@@ -6,24 +6,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.devrachit.insightloop.R
-import com.devrachit.insightloop.data.remote.mapper.toCategory
-import com.devrachit.insightloop.databinding.RvCategoryItemBinding
+import com.devrachit.insightloop.databinding.FeedbackCategoryItemBinding
 import com.devrachit.insightloop.domain.model.Category
-import com.devrachit.insightloop.domain.model.CategoryData
-import com.devrachit.insightloop.domain.model.Feedback
 
-class CategoryAdapter (
- val categories: MutableList<CategoryData>,
-private val onCategoryFeedbackClick: (Feedback, Int, Int) -> Unit
-) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
-    inner class CategoryViewHolder(private val binding: RvCategoryItemBinding) :
+class FeedbackCategoryAdapter(
+    val list: MutableList<FeedbackCategory>,
+    private val onFeedbackClick: (Feedback, Int, Int) -> Unit
+) :
+    RecyclerView.Adapter<FeedbackCategoryAdapter.FeedbackViewHolder>() {
+    inner class FeedbackViewHolder(private val binding: FeedbackCategoryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private lateinit var itemAdapter: ReviewItemsAdapter
+        private lateinit var adapter: FeedbackItemsAdapter
 
-        fun bind(categoryItem: CategoryData) {
+        fun bind(feedbackCategory: FeedbackCategory) {
             binding.ivCategoryIcon.setImageResource(
-                when (categoryItem.category.toCategory()) {
+                when (feedbackCategory.category) {
                     Category.CONFIDENCE -> R.drawable.ic_confidence
                     Category.GRAMMAR -> R.drawable.ic_grammar
                     Category.FLUENCY_AND_VOCABULARY -> R.drawable.ic_fluency
@@ -32,41 +30,39 @@ private val onCategoryFeedbackClick: (Feedback, Int, Int) -> Unit
                     Category.UNSPECIFIED -> R.drawable.ic_others
                 }
             )
-
             binding.llCategory.setOnClickListener {
-                if (categories[adapterPosition].isOpen) {
-                    categories[adapterPosition].isOpen = false
+                if (list[adapterPosition].isOpen) {
+                    list[adapterPosition].isOpen = false
                 } else {
-                    for (i in categories.indices) {
-                        if (i != adapterPosition && categories[i].isOpen) {
-                            categories[i].isOpen = false
+                    for (i in list.indices) {
+                        if (i != adapterPosition && list[i].isOpen) {
+                            list[i].isOpen = false
                             notifyItemChanged(i)
                         }
                     }
-                    categories[adapterPosition].isOpen = true
+                    list[adapterPosition].isOpen = true
                 }
                 notifyItemChanged(adapterPosition)
             }
-            
-            if(categoryItem.isOpen){
+            if(feedbackCategory.isOpen){
                 binding.ivArrow.rotation = 90f
             }
             else{
                 binding.ivArrow.rotation = 0f
             }
-            if (categoryItem.category.toCategory() != Category.OTHER) {
-                if (categoryItem.isOpen) {
+            if (feedbackCategory.category != Category.OTHER) {
+                if (feedbackCategory.isOpen) {
                     binding.rvFeedbackItems.visibility = RecyclerView.VISIBLE
                 } else {
                     binding.rvFeedbackItems.visibility = RecyclerView.GONE
                 }
-                itemAdapter =
-                    ReviewItemsAdapter(categoryItem.feedbackItems.toMutableList()) { feedback, position ->
-                        categories[adapterPosition].feedbackItems[position].selectedFeedback = feedback
-                        itemAdapter.items[position] = categories[adapterPosition].feedbackItems[position]
-                        onCategoryFeedbackClick(feedback, adapterPosition, position)
+                adapter =
+                    FeedbackItemsAdapter(feedbackCategory.feedbackItems.toMutableList()) { feedback, position ->
+                        list[adapterPosition].feedbackItems[position].selectedFeedback = feedback
+                        adapter.list[position] = list[adapterPosition].feedbackItems[position]
+                        onFeedbackClick(feedback, adapterPosition, position)
                         val feedbackCount =
-                            categoryItem.feedbackItems.count { it.selectedFeedback != Feedback.None }
+                            feedbackCategory.feedbackItems.count { it.selectedFeedback != Feedback.NONE }
                         if (feedbackCount > 0) {
                             binding.tvFeedbackCount.text = feedbackCount.toString()
                             binding.tvFeedbackCount.visibility = View.VISIBLE
@@ -74,21 +70,29 @@ private val onCategoryFeedbackClick: (Feedback, Int, Int) -> Unit
                             binding.tvFeedbackCount.visibility = View.GONE
                         }
                     }
-                binding.rvFeedbackItems.adapter = itemAdapter
+                binding.rvFeedbackItems.adapter = adapter
                 binding.rvFeedbackItems.layoutManager =
                     GridLayoutManager(binding.root.context, 2, GridLayoutManager.VERTICAL, false)
+                binding.rvFeedbackItems.clearItemDecorations()
+                binding.rvFeedbackItems.addItemDecoration(
+                    FeedbackSpacingItemDecoration(
+                        2,
+                        binding.root.context.dpToPx(24f),
+                        binding.root.context.dpToPx(24f)
+                    )
+                )
                 binding.etFeedback.visibility = View.GONE
             } else {
                 binding.rvFeedbackItems.visibility = View.GONE
-                if (categoryItem.isOpen) {
+                if (feedbackCategory.isOpen) {
                     binding.etFeedback.visibility = RecyclerView.VISIBLE
                 } else {
                     binding.etFeedback.visibility = RecyclerView.GONE
                 }
             }
-            binding.tvCategoryTitle.text = categoryItem.category
+            binding.tvCategoryTitle.text = feedbackCategory.category.value
             val feedbackCount =
-                categoryItem.feedbackItems.count { it.selectedFeedback != Feedback.None }
+                feedbackCategory.feedbackItems.count { it.selectedFeedback != Feedback.NONE }
             if (feedbackCount > 0) {
                 binding.tvFeedbackCount.text = feedbackCount.toString()
                 binding.tvFeedbackCount.visibility = View.VISIBLE
@@ -97,21 +101,23 @@ private val onCategoryFeedbackClick: (Feedback, Int, Int) -> Unit
             }
         }
 
+    }
 
-        }
-
-
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        return CategoryViewHolder(
-            RvCategoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedbackViewHolder {
+        return FeedbackViewHolder(
+            FeedbackCategoryItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
         )
     }
 
-    override fun getItemCount(): Int = categories.size
+    override fun getItemCount(): Int {
+        return list.size
+    }
 
-    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(categories[position])
+    override fun onBindViewHolder(holder: FeedbackViewHolder, position: Int) {
+        holder.bind(list[position])
     }
 }

@@ -28,7 +28,7 @@ class FeedbackViewModel @Inject constructor(
     private val _feedbackCategories = MutableStateFlow<List<CategoryData>>(emptyList())
     val feedbackCategories: StateFlow<List<CategoryData>> = _feedbackCategories.asStateFlow()
 
-    private val _error = MutableSharedFlow<String>(replay = 1)
+    private val _error = MutableSharedFlow<String>()
     val error: SharedFlow<String> = _error.asSharedFlow()
 
     private val _submitEnabled = MutableStateFlow(false)
@@ -42,17 +42,20 @@ class FeedbackViewModel @Inject constructor(
     }
 
     fun getDetails() {
+        println("getDetails")
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.emit(true)
             try {
                 val response = ServicesRepository.getFeedbackDetails()
+                println(response)
                 val resource = handleResponse(response)
+                println(resource)
                 when (resource) {
                     is Resource.Success -> {
                         _isLoading.emit(false)
                         resource.data?.let { data ->
                             _feedbackCategories.emit(
-                                data.feedbackCategories.map { it.toFeedbackCategory() }
+                                data.feedbackCategories?.map { it.toFeedbackCategory() }?: emptyList()
                             )
                         } ?: run {
                             _feedbackCategories.emit(emptyList())
@@ -72,9 +75,11 @@ class FeedbackViewModel @Inject constructor(
             } catch (e: HttpException) {
                 _isLoading.emit(false)
                 _error.emit("An unexpected error occurred\nResponse code: ${e.code()}")
+                Log.e("FeedbackViewModel", "HttpException: ${e.message()}", e)
             } catch (e: Exception) {
                 _isLoading.emit(false)
                 _error.emit("Couldn't reach the server\nCheck your internet connection")
+                Log.e("FeedbackViewModel", "Exception: ${e.message}", e)
             }
         }
 

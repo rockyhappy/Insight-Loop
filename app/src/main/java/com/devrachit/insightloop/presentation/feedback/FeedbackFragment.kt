@@ -2,6 +2,7 @@ package com.devrachit.insightloop.presentation.feedback
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -104,6 +105,7 @@ class FeedbackFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.error.collectLatest {
+                    Log.d("Screen",it.toString())
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                 }
             }

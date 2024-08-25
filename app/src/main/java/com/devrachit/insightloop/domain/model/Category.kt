@@ -10,10 +10,12 @@ object UNSPECIFIED: Category("Unspecified")
 }
 
 fun getCategoryFromString(value: String): Category {
-    for (category in Category::class.java.enumConstants as Array<Category>) {
-        if (category.value.equals(value, ignoreCase = true)) {
-            return category
-        }
+    return when (value.lowercase()) {
+        Category.CONFIDENCE.value.lowercase() -> Category.CONFIDENCE
+        Category.GRAMMAR.value.lowercase() -> Category.GRAMMAR
+        Category.FLUENCY_AND_VOCABULARY.value.lowercase() -> Category.FLUENCY_AND_VOCABULARY
+        Category.PRONUNCIATION.value.lowercase() -> Category.PRONUNCIATION
+        Category.OTHER.value.lowercase() -> Category.OTHER
+        else -> Category.UNSPECIFIED
     }
-    return Category.UNSPECIFIED
 }
