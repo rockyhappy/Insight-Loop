@@ -11,10 +11,9 @@ import com.devrachit.insightloop.databinding.RvCategoryItemBinding
 import com.devrachit.insightloop.domain.model.Category
 import com.devrachit.insightloop.domain.model.CategoryData
 import com.devrachit.insightloop.domain.model.Feedback
-import com.devrachit.insightloop.domain.model.Option
 
 class CategoryAdapter (
-private val categories: MutableList<CategoryData>,
+ val categories: MutableList<CategoryData>,
 private val onCategoryFeedbackClick: (Feedback, Int, Int) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
     inner class CategoryViewHolder(private val binding: RvCategoryItemBinding) :
