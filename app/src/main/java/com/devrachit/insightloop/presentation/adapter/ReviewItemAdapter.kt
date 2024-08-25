@@ -10,7 +10,7 @@ import com.devrachit.insightloop.domain.model.Feedback
 import com.devrachit.insightloop.domain.model.FeedbackItem
 
 class ReviewItemsAdapter(
-    private val items: MutableList<FeedbackItem>,
+    val items: MutableList<FeedbackItem>,
     private val onAssessmentClick: (Feedback, Int) -> Unit
 ) : RecyclerView.Adapter<ReviewItemsAdapter.ReviewItemViewHolder>() {
 

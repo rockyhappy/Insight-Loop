@@ -1,91 +1,112 @@
 package com.devrachit.insightloop.presentation.adapter
 
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.devrachit.insightloop.R
+import com.devrachit.insightloop.data.remote.mapper.toCategory
+import com.devrachit.insightloop.databinding.RvCategoryItemBinding
+import com.devrachit.insightloop.domain.model.Category
 import com.devrachit.insightloop.domain.model.CategoryData
 import com.devrachit.insightloop.domain.model.Feedback
+import com.devrachit.insightloop.domain.model.Option
 
 class CategoryAdapter (
 private val categories: MutableList<CategoryData>,
 private val onCategoryFeedbackClick: (Feedback, Int, Int) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
-    inner class CategoryViewHolder(private val binding: CategoryItemBinding) :
+    inner class CategoryViewHolder(private val binding: RvCategoryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private lateinit var itemAdapter: CategoryItemsAdapter
+        private lateinit var itemAdapter: ReviewItemsAdapter
 
-        fun bind(categoryItem: CategoryItem) {
-            binding.iconCategory.setImageResource(
-                when (categoryItem.categoryType) {
-                    Category.CONFIDENCE -> R.drawable.confidence
-                    Category.GRAMMAR -> R.drawable.grammar
-                    Category.FLUENCY_AND_VOCABULARY -> R.drawable.fluency
-                    Category.PRONUNCIATION -> R.drawable.pronunciation
-                    Category.OTHER -> R.drawable.others
-                    Category.UNSPECIFIED -> R.drawable.others
+        fun bind(categoryItem: CategoryData) {
+            binding.ivCategoryIcon.setImageResource(
+                when (categoryItem.category.toCategory()) {
+                    Category.CONFIDENCE -> R.drawable.ic_confidence
+                    Category.GRAMMAR -> R.drawable.ic_grammar
+                    Category.FLUENCY_AND_VOCABULARY -> R.drawable.ic_fluency
+                    Category.PRONUNCIATION -> R.drawable.ic_pronunciation
+                    Category.OTHER -> R.drawable.ic_others
+                    Category.UNSPECIFIED -> R.drawable.ic_others
                 }
             )
 
-            binding.containerCategory.setOnClickListener {
-                if (categories[adapterPosition].isExpanded) {
-                    categories[adapterPosition].isExpanded = false
+            binding.llCategory.setOnClickListener {
+                if (categories[adapterPosition].isOpen) {
+                    categories[adapterPosition].isOpen = false
                 } else {
                     for (i in categories.indices) {
-                        if (i != adapterPosition && categories[i].isExpanded) {
-                            categories[i].isExpanded = false
+                        if (i != adapterPosition && categories[i].isOpen) {
+                            categories[i].isOpen = false
                             notifyItemChanged(i)
                         }
                     }
-                    categories[adapterPosition].isExpanded = true
+                    categories[adapterPosition].isOpen = true
                 }
                 notifyItemChanged(adapterPosition)
             }
-
-            binding.iconArrow.rotation = if (categoryItem.isExpanded) 90f else 0f
-
-            if (categoryItem.categoryType != Category.OTHER) {
-                setupRecyclerView(categoryItem)
+            
+            if(categoryItem.isOpen){
+                binding.ivArrow.rotation = 90f
+            }
+            else{
+                binding.ivArrow.rotation = 0f
+            }
+            if (categoryItem.category.toCategory() != Category.OTHER) {
+                if (categoryItem.isOpen) {
+                    binding.rvFeedbackItems.visibility = RecyclerView.VISIBLE
+                } else {
+                    binding.rvFeedbackItems.visibility = RecyclerView.GONE
+                }
+                itemAdapter =
+                    ReviewItemsAdapter(categoryItem.feedbackItems.toMutableList()) { feedback, position ->
+                        categories[adapterPosition].feedbackItems[position].selectedFeedback = feedback
+                        itemAdapter.items[position] = categories[adapterPosition].feedbackItems[position]
+                        onCategoryFeedbackClick(feedback, adapterPosition, position)
+                        val feedbackCount =
+                            categoryItem.feedbackItems.count { it.selectedFeedback != Feedback.None }
+                        if (feedbackCount > 0) {
+                            binding.tvFeedbackCount.text = feedbackCount.toString()
+                            binding.tvFeedbackCount.visibility = View.VISIBLE
+                        } else {
+                            binding.tvFeedbackCount.visibility = View.GONE
+                        }
+                    }
+                binding.rvFeedbackItems.adapter = itemAdapter
+                binding.rvFeedbackItems.layoutManager =
+                    GridLayoutManager(binding.root.context, 2, GridLayoutManager.VERTICAL, false)
+                binding.etFeedback.visibility = View.GONE
             } else {
-                binding.feedbackEditText.visibility =
-                    if (categoryItem.isExpanded) View.VISIBLE else View.GONE
+                binding.rvFeedbackItems.visibility = View.GONE
+                if (categoryItem.isOpen) {
+                    binding.etFeedback.visibility = RecyclerView.VISIBLE
+                } else {
+                    binding.etFeedback.visibility = RecyclerView.GONE
+                }
             }
-
-            binding.titleCategory.text = categoryItem.categoryType.value
-            updateFeedbackCount(categoryItem)
-        }
-
-        private fun setupRecyclerView(categoryItem: CategoryItem) {
-            if (categoryItem.isExpanded) {
-                binding.recyclerViewItems.visibility = RecyclerView.VISIBLE
-            } else {
-                binding.recyclerViewItems.visibility = RecyclerView.GONE
-            }
-            itemAdapter = CategoryItemsAdapter(categoryItem.items.toMutableList()) { feedback, position ->
-                categories[adapterPosition].items[position].selectedFeedback = feedback
-                itemAdapter.items[position] = categories[adapterPosition].items[position]
-                onCategoryFeedbackClick(feedback, adapterPosition, position)
-                updateFeedbackCount(categoryItem)
-            }
-            binding.recyclerViewItems.apply {
-                adapter = itemAdapter
-                layoutManager = GridLayoutManager(context, 2)
-                clearItemDecorations()
-                addItemDecoration(
-                    SpacingItemDecoration(2, context.dpToPx(24f), context.dpToPx(24f))
-                )
-            }
-        }
-
-        private fun updateFeedbackCount(categoryItem: CategoryItem) {
+            binding.tvCategoryTitle.text = categoryItem.category
             val feedbackCount =
-                categoryItem.items.count { it.selectedFeedback != Feedback.NONE }
-            binding.feedbackCount.text = feedbackCount.toString()
-            binding.feedbackCount.visibility = if (feedbackCount > 0) View.VISIBLE else View.GONE
+                categoryItem.feedbackItems.count { it.selectedFeedback != Feedback.None }
+            if (feedbackCount > 0) {
+                binding.tvFeedbackCount.text = feedbackCount.toString()
+                binding.tvFeedbackCount.visibility = View.VISIBLE
+            } else {
+                binding.tvFeedbackCount.visibility = View.GONE
+            }
         }
-    }
+
+
+        }
+
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return CategoryViewHolder(
-            CategoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            RvCategoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -94,5 +115,4 @@ private val onCategoryFeedbackClick: (Feedback, Int, Int) -> Unit
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         holder.bind(categories[position])
     }
-}
 }
