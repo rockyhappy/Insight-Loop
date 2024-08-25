@@ -14,6 +14,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 @Module
 class AppModule {
+    @Provides
+    fun providesApi(retrofit: Retrofit) = retrofit.create(ApiServices::class.java)
+
+    @Provides
+    fun providesRepository(ApiServices: ApiServices): ServicesRepository = ServicesRepositoryImpl(ApiServices)
 
     @Provides
     fun providesRetrofit() =
@@ -23,10 +28,5 @@ class AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-    @Provides
-    fun providesApi(retrofit: Retrofit) = retrofit.create(ApiServices::class.java)
-
-    @Provides
-    fun providesRepository(ApiServices: ApiServices): ServicesRepository = ServicesRepositoryImpl(ApiServices)
 
 }
