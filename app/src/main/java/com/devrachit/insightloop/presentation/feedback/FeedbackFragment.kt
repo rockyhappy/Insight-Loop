@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.devrachit.insightloop.R
 import com.devrachit.insightloop.databinding.FragmentFeedbackBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -12,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FeedbackFragment : Fragment() {
     private lateinit var binding : FragmentFeedbackBinding
+    private val viewModel: FeedbackViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -20,7 +22,12 @@ class FeedbackFragment : Fragment() {
         binding.apply {
 
         }
+        viewModel.getFeedbackDetails()
         return binding.root
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.root.removeAllViewsInLayout()
     }
 
 }
