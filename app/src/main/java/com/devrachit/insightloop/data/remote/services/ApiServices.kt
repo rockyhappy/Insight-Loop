@@ -3,6 +3,7 @@ package com.devrachit.insightloop.data.remote.services
 
 import com.devrachit.insightloop.data.remote.dto.FeedbackCategoryDto
 import com.devrachit.insightloop.data.remote.dto.FeedbackDataDto
+import com.devrachit.insightloop.data.remote.dto.FeedbackRequestDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -14,5 +15,5 @@ interface ApiServices {
     suspend fun getData() : FeedbackDataDto
 
     @POST("api/rating/submitFeedback")
-    suspend fun postFeedback(@Body feedbackSubmitDto: Any) : Response<Unit>
+    suspend fun postFeedback(@Body feedbackSubmitDto: FeedbackRequestDto) : Any
 }

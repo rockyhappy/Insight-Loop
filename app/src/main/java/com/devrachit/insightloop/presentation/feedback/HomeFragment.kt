@@ -2,6 +2,7 @@ package com.devrachit.insightloop.presentation.feedback
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +58,9 @@ class HomeFragment : Fragment() {
             disableSubmitButton()
         }
 
+        binding.btnSubmit.setOnClickListener {
+            viewModel.makeRequest()
+        }
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
