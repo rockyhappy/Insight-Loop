@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.devrachit.insightloop.R
 import com.devrachit.insightloop.databinding.FragmentThankyouBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,13 +20,15 @@ class ThankyouFragment : Fragment() {
     ): View{
         binding = FragmentThankyouBinding.inflate(inflater, container, false)
         binding.apply {
-
+            btnDashboard.setOnClickListener {
+                findNavController().navigateUp()
+            }
         }
         return binding.root
     }
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.root.removeAllViewsInLayout()
+        binding.unbind()
     }
 
 
