@@ -38,10 +38,10 @@ class FeedbackViewModel @Inject constructor(
     val isLoading: SharedFlow<Boolean> = _isLoading.asSharedFlow()
 
     init {
-        getFeedbackDetails()
+        getDetails()
     }
 
-    fun getFeedbackDetails() {
+    fun getDetails() {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.emit(true)
             try {
@@ -78,6 +78,9 @@ class FeedbackViewModel @Inject constructor(
             }
         }
 
+    }
+    fun setEnabled(enabled: Boolean) {
+        _submitEnabled.value = enabled
     }
 
 }

@@ -22,7 +22,7 @@ class FeedbackFragment : Fragment() {
         binding.apply {
 
         }
-        viewModel.getFeedbackDetails()
+
         return binding.root
     }
     override fun onDestroyView() {
