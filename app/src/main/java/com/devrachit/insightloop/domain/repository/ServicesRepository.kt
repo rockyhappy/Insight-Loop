@@ -8,5 +8,5 @@ import retrofit2.Response
 interface ServicesRepository {
     suspend fun getFeedbackDetails(): FeedbackDataDto
 
-    suspend fun postFeedback(feedbackRequestDto: FeedbackRequestDto): Any
+    suspend fun postFeedback(feedbackRequestDto: Any): Any
 }

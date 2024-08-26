@@ -15,5 +15,5 @@ interface ApiServices {
     suspend fun getData() : FeedbackDataDto
 
     @POST("api/rating/submitFeedback")
-    suspend fun postFeedback(@Body feedbackSubmitDto: FeedbackRequestDto) : Any
+    suspend fun postFeedback(@Body feedbackSubmitDto: Any) : Any
 }

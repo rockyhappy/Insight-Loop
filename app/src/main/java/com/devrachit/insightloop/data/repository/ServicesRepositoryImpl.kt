@@ -12,7 +12,7 @@ class ServicesRepositoryImpl @Inject constructor(private val apiServices: ApiSer
         return apiServices.getData()
     }
 
-    override suspend fun postFeedback(feedbackRequestDto: FeedbackRequestDto): Any {
+    override suspend fun postFeedback(feedbackRequestDto: Any): Any {
         return apiServices.postFeedback(feedbackSubmitDto = feedbackRequestDto)
     }
 }

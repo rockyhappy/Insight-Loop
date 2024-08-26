@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devrachit.core.common.Resource
 import com.devrachit.insightloop.data.remote.dto.FeedbackCategoryRequestDto
-import com.devrachit.insightloop.data.remote.dto.FeedbackDetailsRequestDto
 import com.devrachit.insightloop.data.remote.dto.FeedbackRequestDto
 import com.devrachit.insightloop.domain.model.Category
 import com.devrachit.insightloop.domain.model.Feedback
 import com.devrachit.insightloop.domain.model.FeedbackCategory
 import com.devrachit.insightloop.domain.model.FeedbackItem
 import com.devrachit.insightloop.domain.useCase.GetFeedbackDataUseCase
+import com.devrachit.insightloop.domain.useCase.PostFeedbackDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val getFeedbackDataUseCase: GetFeedbackDataUseCase) :
+class HomeViewModel @Inject constructor(
+    private val getFeedbackDataUseCase: GetFeedbackDataUseCase,
+    private val postFeedbackDataUseCase: PostFeedbackDataUseCase
+) :
     ViewModel() {
 
     private val _feedbackCategories: MutableStateFlow<List<FeedbackCategory>> = MutableStateFlow(
@@ -54,6 +57,7 @@ class HomeViewModel @Inject constructor(private val getFeedbackDataUseCase: GetF
             pronunciation = mapToFeedbackCategoryRequestDto(Category.PRONUNCIATION)
         )
         _feedbackRequest.value = updatedRequest
+        postFeedback()
 
     }
     private fun mapToFeedbackCategoryRequestDto(category: Category): FeedbackCategoryRequestDto? {
@@ -64,7 +68,7 @@ class HomeViewModel @Inject constructor(private val getFeedbackDataUseCase: GetF
             scopeOfImprovement = mapToFeedbackDetailsRequestDto(feedbackCategory.feedbackItems.filter { it.selectedFeedback == Feedback.SCOPE_OF_IMPROVEMENT })
         )
     }
-    private fun mapToFeedbackDetailsRequestDto(items: List<FeedbackItem>): FeedbackDetailsRequestDto {
+    private fun mapToFeedbackDetailsRequestDto(items: List<FeedbackItem>): Map<String, List<String>> {
         val detailsMap = mutableMapOf<String, List<String>>()
 
         items.forEach { item ->
@@ -73,7 +77,7 @@ class HomeViewModel @Inject constructor(private val getFeedbackDataUseCase: GetF
             else if(item.selectedFeedback.name == Feedback.SCOPE_OF_IMPROVEMENT.name)
                 detailsMap.merge(item.aspect, item.scopeOfImprovement.map { it.text }) { old, new -> old + new }
         }
-        return FeedbackDetailsRequestDto(details = detailsMap)
+        return detailsMap
     }
     private fun getFeedbackData() {
         getFeedbackDataUseCase().onEach {
@@ -90,6 +94,26 @@ class HomeViewModel @Inject constructor(private val getFeedbackDataUseCase: GetF
                 is Resource.Error -> {
                     _isLoading.send(false)
                     _error.send(it.message!!)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+    private fun postFeedback() {
+        postFeedbackDataUseCase(feedbackrequest.value).onEach {
+            when (it) {
+                is Resource.Loading -> {
+                    _isLoading.send(true)
+                }
+
+                is Resource.Success -> {
+                    _isLoading.send(false)
+                    println("Success: ${it.data}")
+                }
+
+                is Resource.Error -> {
+                    _isLoading.send(false)
+                    _error.send(it.message!!)
+                    println("Error: ${it.message}")
                 }
             }
         }.launchIn(viewModelScope)
