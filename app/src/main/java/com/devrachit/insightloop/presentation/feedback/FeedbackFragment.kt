@@ -17,7 +17,7 @@ import com.devrachit.insightloop.R
 import com.devrachit.insightloop.databinding.FragmentHomeBinding
 import com.devrachit.insightloop.domain.model.Feedback
 import com.devrachit.insightloop.presentation.adapter.FeedbackCategoryAdapter
-import com.devrachit.insightloop.presentation.bottomsheet.OptionBottomSheet
+import com.devrachit.insightloop.presentation.bottomsheet.BottomSheet
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ class FeedbackFragment : Fragment() {
     private val viewModel: FeedbackViewModel by viewModels()
     private lateinit var feedbackCategoryAdapter: FeedbackCategoryAdapter
 
-    private lateinit var optionBottomSheet: OptionBottomSheet
+    private lateinit var bottomSheet: BottomSheet
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,23 +80,23 @@ class FeedbackFragment : Fragment() {
                             when (feedback) {
                                 Feedback.DID_WELL -> {
                                     if (list[i].feedbackItems[j].didWell.size > 1) {
-                                        optionBottomSheet =
-                                            OptionBottomSheet(list[i].feedbackItems[j].didWell) {
+                                        bottomSheet =
+                                            BottomSheet(list[i].feedbackItems[j].didWell) {
                                                 feedbackCategoryAdapter.list[i].feedbackItems[j].didWell =
                                                     it
                                             }
-                                        optionBottomSheet.show(parentFragmentManager, "BottomSheet")
+                                        bottomSheet.show(parentFragmentManager, "BottomSheet")
                                     }
                                 }
 
                                 Feedback.SCOPE_OF_IMPROVEMENT -> {
                                     if (list[i].feedbackItems[j].scopeOfImprovement.size > 1) {
-                                        optionBottomSheet =
-                                            OptionBottomSheet(list[i].feedbackItems[j].scopeOfImprovement) {
+                                        bottomSheet =
+                                            BottomSheet(list[i].feedbackItems[j].scopeOfImprovement) {
                                                 feedbackCategoryAdapter.list[i].feedbackItems[j].scopeOfImprovement =
                                                     it
                                             }
-                                        optionBottomSheet.show(parentFragmentManager, "BottomSheet")
+                                        bottomSheet.show(parentFragmentManager, "BottomSheet")
                                     }
                                 }
 

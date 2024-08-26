@@ -9,7 +9,7 @@ import com.devrachit.insightloop.domain.model.Option
 import com.devrachit.insightloop.presentation.adapter.OptionAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class OptionBottomSheet(private val options: List<Option>, private val onDoneClick: (List<Option>) -> Unit): BottomSheetDialogFragment() {
+class BottomSheet(private val options: List<Option>, private val onDoneClick: (List<Option>) -> Unit): BottomSheetDialogFragment() {
 
     private var _binding: OptionBottomSheetBinding? = null
     private val binding get() = _binding!!
