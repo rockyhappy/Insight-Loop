@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.devrachit.insightloop.R
 import com.devrachit.insightloop.databinding.FragmentThankyouBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ThankyouFragment : Fragment() {
+class EndFragment : Fragment() {
     private lateinit var binding : FragmentThankyouBinding
 
     override fun onCreateView(

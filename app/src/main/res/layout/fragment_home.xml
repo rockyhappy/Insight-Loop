@@ -29,7 +29,7 @@
                     android:text="@string/tell_us_a_bit_about_your_learners_english_proficiency"
                     android:textAlignment="center"
                     android:textColor="@color/black"
-                    android:textSize="27sp"
+                    android:textSize="22sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -41,10 +41,12 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
                     android:text="@string/home_content"
                     android:textAlignment="center"
                     android:textColor="@color/gray_dark"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/titleTextView" />
@@ -113,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="16sp"
+                android:textSize="12sp"
                 android:textColor="@color/gray_light"
                 android:text="@string/note_for_regular_sessions_there_should_be_at_least_one_feedback_in_each_category"/>
         </LinearLayout>

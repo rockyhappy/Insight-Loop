@@ -7,13 +7,13 @@
     <fragment
         android:id="@+id/thankYouFragment"
         tools:layout="@layout/fragment_thankyou"
-        android:name="com.devrachit.insightloop.presentation.thankyou.ThankyouFragment"
+        android:name="com.devrachit.insightloop.presentation.thankyou.EndFragment"
         android:label="ThankYouFragment" />
 
     <fragment
         android:id="@+id/feedbackFragment"
         tools:layout="@layout/fragment_home"
-        android:name="com.devrachit.insightloop.presentation.feedback.HomeFragment"
+        android:name="com.devrachit.insightloop.presentation.feedback.FeedbackFragment"
         android:label="FeedbackFragment" >
         <action
             android:id="@+id/action_feedbackFragment_to_thankYouFragment"

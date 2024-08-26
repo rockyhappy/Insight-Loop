@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class FeedbackViewModel @Inject constructor(
     private val getFeedbackDataUseCase: GetFeedbackDataUseCase,
     private val postFeedbackDataUseCase: PostFeedbackDataUseCase
 ) :
@@ -35,6 +35,9 @@ class HomeViewModel @Inject constructor(
 
     private var _feedbackRequest: MutableStateFlow<FeedbackRequestDto> = MutableStateFlow(FeedbackRequestDto())
     val feedbackrequest:StateFlow<FeedbackRequestDto> get()=_feedbackRequest.asStateFlow()
+
+    private val feedbackSubmitted = Channel<Boolean>()
+    val feedbackSubmittedFlow = feedbackSubmitted.receiveAsFlow()
 
     private val _isLoading: Channel<Boolean> = Channel()
     val isLoading get() = _isLoading.receiveAsFlow()
@@ -107,7 +110,8 @@ class HomeViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     _isLoading.send(false)
-                    println("Success: ${it.data}")
+                    feedbackSubmitted.send(true)
+
                 }
 
                 is Resource.Error -> {

@@ -2,7 +2,6 @@ package com.devrachit.insightloop.presentation.feedback
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,11 +23,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class FeedbackFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: FeedbackViewModel by viewModels()
     private lateinit var feedbackCategoryAdapter: FeedbackCategoryAdapter
 
     private lateinit var optionBottomSheet: OptionBottomSheet
@@ -60,6 +59,14 @@ class HomeFragment : Fragment() {
 
         binding.btnSubmit.setOnClickListener {
             viewModel.makeRequest()
+            lifecycleScope.launch {
+                viewModel.feedbackSubmittedFlow.collect{isSubmitted->
+                    if(isSubmitted){
+                        findNavController().navigate(R.id.action_feedbackFragment_to_thankYouFragment)
+                    }
+
+                }
+            }
         }
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
