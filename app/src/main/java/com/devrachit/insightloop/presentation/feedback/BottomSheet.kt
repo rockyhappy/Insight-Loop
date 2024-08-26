@@ -1,4 +1,4 @@
-package com.devrachit.insightloop.presentation.bottomsheet
+package com.devrachit.insightloop.presentation.feedback
 
 import android.os.Bundle
 import android.view.LayoutInflater
