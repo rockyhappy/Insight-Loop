@@ -26,22 +26,24 @@ class PostFeedbackDataUseCase @Inject constructor(private val repository: Servic
         emit(Resource.Loading())
         try {
             var request = request()
+            print(feedbackRequestDto)
             feedbackRequestDto.confidence.let {
+                println(it)
                 request.confidence = Confidence(
                     DidWellConfidence(
-                        eyeContact = it?.didWell?.get("eyeContact") ?: emptyList(),
-                        overallBodyLanguage = it?.didWell?.get("overallBodyLanguage")
+                        eyeContact = it?.didWell?.get("Eye Contact") ?: emptyList(),
+                        overallBodyLanguage = it?.didWell?.get("Overall Body Language")
                             ?: emptyList(),
-                        useOfFillers = it?.didWell?.get("useOfFillers") ?: emptyList(),
-                        pausesWhileSpeaking = it?.didWell?.get("pausesWhileSpeaking")
+                        useOfFillers = it?.didWell?.get("Use Of Fillers") ?: emptyList(),
+                        pausesWhileSpeaking = it?.didWell?.get("Pauses While Speaking")
                             ?: emptyList(),
                     ),
                     ScopeOfImprovementConfidence(
-                        eyeContact = it?.didWell?.get("eyeContact") ?: emptyList(),
-                        overallBodyLanguage = it?.didWell?.get("overallBodyLanguage")
+                        eyeContact = it?.scopeOfImprovement?.get("Eye Contact") ?: emptyList(),
+                        overallBodyLanguage = it?.scopeOfImprovement?.get("Overall Body Language")
                             ?: emptyList(),
-                        useOfFillers = it?.didWell?.get("useOfFillers") ?: emptyList(),
-                        pausesWhileSpeaking = it?.didWell?.get("pausesWhileSpeaking")
+                        useOfFillers = it?.scopeOfImprovement?.get("Use Of Fillers") ?: emptyList(),
+                        pausesWhileSpeaking = it?.scopeOfImprovement?.get("Pauses While Speaking")
                             ?: emptyList(),
                     )
                 )
@@ -49,30 +51,30 @@ class PostFeedbackDataUseCase @Inject constructor(private val repository: Servic
             feedbackRequestDto.grammar.let {
                 request.grammar = Grammar(
                     DidWellGrammar(
-                        subjectVerbAgreement = it?.didWell?.get("subjectVerbAgreement")
+                        subjectVerbAgreement = it?.didWell?.get("Subject Verb Agreement")
                             ?: emptyList(),
-                        applicationOfSingularVsPlural = it?.didWell?.get("applicationOfSingularVsPlural")
+                        applicationOfSingularVsPlural = it?.didWell?.get("Application Of Singular Vs Plural")
                             ?: emptyList(),
-                        usageOfModalAuxiliaries = it?.didWell?.get("usageOfModalAuxiliaries")
+                        usageOfModalAuxiliaries = it?.didWell?.get("Usage Of Modal Auxiliaries")
                             ?: emptyList(),
-                        useOfArticles = it?.didWell?.get("useOfArticles") ?: emptyList(),
-                        useOfTenses = it?.didWell?.get("useOfTenses") ?: emptyList(),
-                        useOfParticiples = it?.didWell?.get("useOfParticiples") ?: emptyList(),
-                        useOfPrepositions = it?.didWell?.get("useOfPrepositions") ?: emptyList(),
-                        usageOfPronouns = it?.didWell?.get("usageOfPronouns") ?: emptyList(),
+                        useOfArticles = it?.didWell?.get("Use Of Articles") ?: emptyList(),
+                        useOfTenses = it?.didWell?.get("Use Of Tenses") ?: emptyList(),
+                        useOfParticiples = it?.didWell?.get("Use Of Participles") ?: emptyList(),
+                        useOfPrepositions = it?.didWell?.get("Use Of Prepositions") ?: emptyList(),
+                        usageOfPronouns = it?.didWell?.get("Usage Of Pronouns") ?: emptyList(),
                     ),
                     ScopeOfImprovementGrammar(
-                        subjectVerbAgreement = it?.didWell?.get("subjectVerbAgreement")
+                        subjectVerbAgreement = it?.scopeOfImprovement?.get("Subject Verb Agreement")
                             ?: emptyList(),
-                        applicationOfSingularVsPlural = it?.didWell?.get("applicationOfSingularVsPlural")
+                        applicationOfSingularVsPlural = it?.scopeOfImprovement?.get("Application Of Singular Vs Plural")
                             ?: emptyList(),
-                        usageOfModalAuxiliaries = it?.didWell?.get("usageOfModalAuxiliaries")
+                        usageOfModalAuxiliaries = it?.scopeOfImprovement?.get("Usage Of Modal Auxiliaries")
                             ?: emptyList(),
-                        useOfArticles = it?.didWell?.get("useOfArticles") ?: emptyList(),
-                        useOfTenses = it?.didWell?.get("useOfTenses") ?: emptyList(),
-                        useOfParticiples = it?.didWell?.get("useOfParticiples") ?: emptyList(),
-                        useOfPrepositions = it?.didWell?.get("useOfPrepositions") ?: emptyList(),
-                        usageOfPronouns = it?.didWell?.get("usageOfPronouns") ?: emptyList(),
+                        useOfArticles = it?.scopeOfImprovement?.get("Use Of Articles") ?: emptyList(),
+                        useOfTenses = it?.scopeOfImprovement?.get("Use Of Tenses") ?: emptyList(),
+                        useOfParticiples = it?.scopeOfImprovement?.get("Use Of Participles") ?: emptyList(),
+                        useOfPrepositions = it?.scopeOfImprovement?.get("Use Of Prepositions") ?: emptyList(),
+                        usageOfPronouns = it?.scopeOfImprovement?.get("Usage Of Pronouns") ?: emptyList(),
                     )
                 )
             }
@@ -80,37 +82,38 @@ class PostFeedbackDataUseCase @Inject constructor(private val repository: Servic
             feedbackRequestDto.fluencyAndVocabulary.let {
                 request.fluencyAndVocabulary = FluencyAndVocabulary(
                     DidWellFluencyAndVocabulary(
-                        continuity = it?.didWell?.get("continuity") ?: emptyList(),
-                        sentenceFormation = it?.didWell?.get("sentenceFormation") ?: emptyList(),
-                        speed = it?.didWell?.get("speed") ?: emptyList(),
-                        sentenceCompletion = it?.didWell?.get("sentenceCompletion") ?: emptyList(),
+                        continuity = it?.didWell?.get("Continuity") ?: emptyList(),
+                        sentenceFormation = it?.didWell?.get("Sentence Formation") ?: emptyList(),
+                        speed = it?.didWell?.get("Speed") ?: emptyList(),
+                        sentenceCompletion = it?.didWell?.get("Sentence Completion") ?: emptyList(),
                     ),
                     ScopeOfImprovementFluencyAndVocabulary(
-                        continuity = it?.didWell?.get("continuity") ?: emptyList(),
-                        sentenceFormation = it?.didWell?.get("sentenceFormation") ?: emptyList(),
-                        speed = it?.didWell?.get("speed") ?: emptyList(),
-                        sentenceCompletion = it?.didWell?.get("sentenceCompletion") ?: emptyList(),
+                        continuity = it?.scopeOfImprovement?.get("Continuity") ?: emptyList(),
+                        sentenceFormation = it?.scopeOfImprovement?.get("Sentence Formation") ?: emptyList(),
+                        speed = it?.scopeOfImprovement?.get("Speed") ?: emptyList(),
+                        sentenceCompletion = it?.scopeOfImprovement?.get("Sentence Completion") ?: emptyList(),
                     )
                 )
             }
             feedbackRequestDto.pronunciation.let {
                 request.pronunciation = Pronunciation(
                     DidWellPronunciation(
-                        modulation = it?.didWell?.get("modulation") ?: emptyList(),
-                        intonation = it?.didWell?.get("intonation") ?: emptyList(),
-                        pronunciationOfWordsWithSilentLetters = it?.didWell?.get("pronunciationOfWordsWithSilentLetters")
+                        modulation = it?.didWell?.get("Modulation") ?: emptyList(),
+                        intonation = it?.didWell?.get("Intonation") ?: emptyList(),
+                        pronunciationOfWordsWithSilentLetters = it?.didWell?.get("Pronunciation Of Words With Silent Letters")
                             ?: emptyList(),
-                        speechClarity = it?.didWell?.get("speechClarity") ?: emptyList(),
+                        speechClarity = it?.didWell?.get("Speech Clarity") ?: emptyList(),
                     ),
                     ScopeOfImprovementPronunciation(
-                        modulation = it?.didWell?.get("modulation") ?: emptyList(),
-                        intonation = it?.didWell?.get("intonation") ?: emptyList(),
-                        pronunciationOfWordsWithSilentLetters = it?.didWell?.get("pronunciationOfWordsWithSilentLetters")
+                        modulation = it?.scopeOfImprovement?.get("Modulation") ?: emptyList(),
+                        intonation = it?.scopeOfImprovement?.get("Intonation") ?: emptyList(),
+                        pronunciationOfWordsWithSilentLetters = it?.scopeOfImprovement?.get("Pronunciation Of Words With Silent Letters")
                             ?: emptyList(),
-                        speechClarity = it?.didWell?.get("speechClarity") ?: emptyList(),
+                        speechClarity = it?.scopeOfImprovement?.get("Speech Clarity") ?: emptyList(),
                     )
                 )
             }
+
             val data = repository.postFeedback(request)
             emit(Resource.Success(data.toString()))
         } catch (e: HttpException) {

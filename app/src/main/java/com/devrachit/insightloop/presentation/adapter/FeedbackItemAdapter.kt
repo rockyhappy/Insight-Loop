@@ -1,6 +1,8 @@
 package com.devrachit.insightloop.presentation.adapter
 
+import android.graphics.Rect
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -15,68 +17,70 @@ class FeedbackItemsAdapter(
 ) :
     RecyclerView.Adapter<FeedbackItemsAdapter.FeedbackItemViewHolder>() {
     inner class FeedbackItemViewHolder(private val binding: FeedbackItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder( binding.root) {
         fun bind(feedbackItem: FeedbackItem) {
-            binding.tvAspect.text = feedbackItem.aspect
-            binding.cvNegative.setOnClickListener {
-                binding.cvNegative.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        it.context,
-                        R.color.persian_green
+            binding.apply {
+                tvAspect.text = feedbackItem.aspect
+                cvNegative.setOnClickListener {
+                    cvNegative.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            it.context,
+                            R.color.persian_green
+                        )
                     )
-                )
-                binding.cvPositive.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        it.context,
-                        R.color.gray_extra_light
+                    cvPositive.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            it.context,
+                            R.color.gray_extra_light
+                        )
                     )
-                )
-                onFeedbackClick(Feedback.SCOPE_OF_IMPROVEMENT, adapterPosition)
-            }
-            binding.cvPositive.setOnClickListener {
-                binding.cvPositive.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        it.context,
-                        R.color.persian_green
+                    onFeedbackClick(Feedback.SCOPE_OF_IMPROVEMENT, adapterPosition)
+                }
+                cvPositive.setOnClickListener {
+                    cvPositive.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            it.context,
+                            R.color.persian_green
+                        )
                     )
-                )
-                binding.cvNegative.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        it.context,
-                        R.color.gray_extra_light
+                    cvNegative.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            it.context,
+                            R.color.gray_extra_light
+                        )
                     )
-                )
-                onFeedbackClick(Feedback.DID_WELL, adapterPosition)
-            }
+                    onFeedbackClick(Feedback.DID_WELL, adapterPosition)
+                }
 
-            if (feedbackItem.selectedFeedback == Feedback.DID_WELL) {
-                binding.cvPositive.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        binding.root.context,
-                        R.color.persian_green
+                if (feedbackItem.selectedFeedback == Feedback.DID_WELL) {
+                    cvPositive.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            R.color.persian_green
+                        )
                     )
-                )
-                binding.cvNegative.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        binding.root.context,
-                        R.color.gray_extra_light
+                    cvNegative.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            R.color.gray_extra_light
+                        )
                     )
-                )
-            }
+                }
 
-            if (feedbackItem.selectedFeedback == Feedback.SCOPE_OF_IMPROVEMENT) {
-                binding.cvPositive.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        binding.root.context,
-                        R.color.gray_extra_light
+                if (feedbackItem.selectedFeedback == Feedback.SCOPE_OF_IMPROVEMENT) {
+                    cvPositive.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            R.color.gray_extra_light
+                        )
                     )
-                )
-                binding.cvNegative.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        binding.root.context,
-                        R.color.persian_green
+                    cvNegative.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            R.color.persian_green
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -91,5 +95,22 @@ class FeedbackItemsAdapter(
 
     override fun onBindViewHolder(holder: FeedbackItemViewHolder, position: Int) {
         holder.bind(list[position])
+    }
+}
+class FeedbackSpacingItemDecoration(private val spanCount : Int, private val horizontalSpacing: Int, private val verticalSpacing: Int) : RecyclerView.ItemDecoration() {
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+        val position = parent.getChildAdapterPosition(view)
+        val column = position % spanCount
+
+        outRect.left = column * horizontalSpacing / spanCount
+        outRect.right = horizontalSpacing - (column + 1) * horizontalSpacing / spanCount
+        if (position >= spanCount) {
+            outRect.top = verticalSpacing
+        }
     }
 }
